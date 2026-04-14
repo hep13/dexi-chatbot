@@ -8,8 +8,14 @@ export function ChatKitPanel() {
     []
   );
 
-  const chatkit = useChatKit({
+ const chatkit = useChatKit({
     api: { getClientSecret },
+    initialMessages: [
+      {
+        role: "assistant",
+        content: "Hi! I'm Dexi, your Symbolix assistant. How can I help you today?",
+      },
+    ],
   });
 
   return (
