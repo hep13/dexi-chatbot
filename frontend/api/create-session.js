@@ -1,28 +1,7 @@
-const rateLimit = new Map();
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-
-  const ip = req.headers['x-forwarded-for'] || 'unknown';
-  const now = Date.now();
-  const windowMs = 24 * 60 * 60 * 1000;
-  const maxRequests = 20;
-
-  if (!rateLimit.has(ip)) {
-    rateLimit.set(ip, { count: 1, start: now });
-  } else {
-    const record = rateLimit.get(ip);
-    if (now - record.start > windowMs) {
-      rateLimit.set(ip, { count: 1, start: now });
-    } else if (record.count >= maxRequests) {
-      return res.status(429).json({ error: 'Too many requests. Please try again tomorrow.' });
-    } else {
-      record.count++;
-    }
-  }
-
   const { workflow } = req.body;
   const response = await fetch('https://api.openai.com/v1/chatkit/sessions', {
     method: 'POST',
